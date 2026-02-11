@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Expert System v2.0</title>
+    <style>
+        /* Modern "Dark Mode" Professional Aesthetic */
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --bot-bubble: #334155;
+            --user-bubble: #0284c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 450px;
+            height: 700px;
+            background: var(--card);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        /* Header with Traditional "System" feel */
+        .header {
+            padding: 24px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            letter-spacing: 1px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .header p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Chat Area */
+        #chat-window {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: var(--bot-bubble);
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: var(--user-bubble);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Input Area */
+        .input-group {
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        button {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            border-radius: 12px;
+            padding: 0 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        button:active { transform: scale(0.95); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="header">
+        <h1>Library Expert System</h1>
+        <p>Predefined Rule-Based Architecture</p>
+    </div>
+
+    <div id="chat-window">
+        <div class="message bot">System Initialized. Accessing library database... How can I assist you today?</div>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="userInput" placeholder="Enter keywords (e.g., hours, fines)...">
+        <button onclick="handleSend()">SEND</button>
+    </div>
+</div>
+
+<script>
+    /**
+     * TRADITIONAL KNOWLEDGE BASE
+     * Mimics early expert systems by using prioritized keyword mapping.
+     */
+    /**
+ * EXPANDED TRADITIONAL KNOWLEDGE BASE
+ * Categorized for better organizational logic.
+ */
+const KNOWLEDGE_BASE = [
+    // --- GREETINGS & SYSTEM ---
+    {
+        keywords: [/hi/, /hello/, /hey/, /greetings/, /morning/, /evening/],
+        response: "System Online. Welcome to the Library Expert Interface. How can I assist your research today?"
+    },
+    {
+        keywords: [/help/, /what can you do/, /options/, /menu/],
+        response: "I am programmed to assist with: 1. Timings 2. Membership 3. Borrowing Rules 4. Fines 5. Facility Info (Wi-Fi, Printing) 6. Research Databases."
+    },
+
+    // --- ACCESS & TIMINGS ---
+    {
+        keywords: [/hour/, /time/, /open/, /close/, /schedule/],
+        response: "Operating Hours: Mon-Fri (08:00 - 20:00), Sat (09:00 - 18:00). We are closed on Sundays and National Holidays."
+    },
+    {
+        keywords: [/holiday/, /vacation/, /break/],
+        response: "During academic breaks, hours are reduced to 09:00 - 17:00. Please check the physical notice board for specific holiday dates."
+    },
+
+    // --- MEMBERSHIP & ACCOUNTS ---
+    {
+        keywords: [/member/, /card/, /register/, /join/, /account/],
+        response: "To register, bring your Student/Staff ID and a proof of address to the East Wing. Processing takes 24 hours."
+    },
+    {
+        keywords: [/lost/, /missing/, /stolen/, /replacement/],
+        response: "Report lost cards immediately. A replacement fee of ₹50 applies. Your account will be frozen to prevent unauthorized borrowing."
+    },
+
+    // --- CIRCULATION (BOOKS) ---
+    {
+        keywords: [/borrow/, /issue/, /take/, /loan/],
+        response: "Undergraduates: 3 books (14 days). Postgraduates: 6 books (30 days). Faculty: 15 books (90 days)."
+    },
+    {
+        keywords: [/renew/, /extend/],
+        response: "Books can be renewed once via the online portal, provided no other member has placed a 'Hold' on the item."
+    },
+    {
+        keywords: [/return/, /drop/],
+        response: "Please use the 'Book Drop' slot at the main entrance for after-hours returns."
+    },
+
+    // --- FINES & PENALTIES ---
+    {
+        keywords: [/fine/, /late/, /fee/, /penalty/, /overdue/],
+        response: "Late fee: ₹2.00/day. If a book is overdue by 30+ days, the account is suspended until the balance is cleared."
+    },
+
+    // --- FACILITIES & TECHNOLOGY ---
+    {
+        keywords: [/wifi/, /internet/, /password/, /connect/],
+        response: "Network: 'Lib_Guest_HighSpeed'. Login using your Library ID and your registered date of birth (DDMMYYYY) as the password."
+    },
+    {
+        keywords: [/print/, /copy/, /xerox/, /scan/],
+        response: "Printing stations are available on the 1st Floor. Costs: Black & White (₹1/page), Color (₹5/page). Scanning is free."
+    },
+    {
+        keywords: [/quiet/, /study/, /silent/, /noise/],
+        response: "The 3rd Floor is a designated 'Silent Zone'. Group discussions are permitted only in the study pods on the Ground Floor."
+    },
+
+    // --- RESEARCH & DIGITAL ---
+    {
+        keywords: [/database/, /journal/, /article/, /research/, /ieee/, /jstor/],
+        response: "We subscribe to JSTOR, IEEE Xplore, and Elsevier. Access these via the 'Digital Resources' tab on the library computers."
+    },
+    {
+        keywords: [/ebook/, /kindle/, /pdf/, /online book/],
+        response: "Our digital catalog contains over 50,000 e-books. You can 'checkout' an e-book for 7 days via our mobile app."
+    },
+
+    // --- EMERGENCY & SUPPORT ---
+    {
+        keywords: [/staff/, /librarian/, /human/, /talk to someone/],
+        response: "The Help Desk is staffed from 09:00 to 17:00. You can also email us at support@library.edu."
+    }
+];
+    const chatWindow = document.getElementById('chat-window');
+    const inputField = document.getElementById('userInput');
+
+    function handleSend() {
+        const text = inputField.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        inputField.value = '';
+
+        // Inference Engine Logic
+        setTimeout(() => {
+            const reply = inferenceEngine(text);
+            addMessage(reply, 'bot');
+        }, 600);
+    }
+
+    function inferenceEngine(input) {
+        const lowInput = input.toLowerCase();
+        
+        // Loop through Knowledge Base to find a rule match
+        for (const rule of KNOWLEDGE_BASE) {
+            if (rule.keywords.some(regex => regex.test(lowInput))) {
+                return rule.response;
+            }
+        }
+
+        // Fallback if no rules trigger
+        return "ERROR: Query not recognized. Please use keywords like 'hours', 'membership', or 'fines'.";
+    }
+
+    function addMessage(text, sender) {
+        const msg = document.createElement('div');
+        msg.className = `message ${sender}`;
+        msg.innerText = text;
+        chatWindow.appendChild(msg);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // Allow 'Enter' key to send
+    inputField.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") handleSend();
+    });
+</script>
+
+</body>
+</html>
